@@ -75,8 +75,4 @@ class Particle {
       popMatrix();
     }
   }
-  
-  void directions() {
-    
-  }
 }
