@@ -25,7 +25,6 @@ float q_temp;
 float EF_Mag_temp;
 float MF_Mag_temp;
 
-boolean FULLSCREEN = true;
 void setup() {
   //fullScreen(P3D);
   size(800, 800, P3D);
