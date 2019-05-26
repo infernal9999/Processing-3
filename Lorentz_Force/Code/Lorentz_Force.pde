@@ -30,17 +30,18 @@ void setup() {
   
   int len = 60;
   int gaps = (width - len);
-  int space = gaps/5;
+  int space = gaps/6;
   
   cam = new PeasyCam(this, 600);
   
   cp5 = new ControlP5(this);
-  cp5.addTextfield("CHARGE").setPosition(space, height-35).setSize(len, 20).setAutoClear(false);
-  cp5.addTextfield("EF_MAG").setPosition((space * 2), height-35).setSize(len, 20).setAutoClear(false);
-  cp5.addTextfield("MF_MAG").setPosition((space * 3), height-35).setSize(len, 20).setAutoClear(false);
-  cp5.addTextfield("ANGLE").setPosition((space * 4), height-35).setSize(len, 20).setAutoClear(false);
+  cp5.addTextfield("CHARGE").setPosition(space, height-50).setSize(len, 20).setFont(createFont("Arial Black", 12)).setColor(color(255, 75, 10)).setAutoClear(false);
+  cp5.addTextfield(" EF_MAG").setPosition((space * 2), height-50).setSize(len, 20).setFont(createFont("Arial Black", 12)).setColor(EF).setAutoClear(false);
+  cp5.addTextfield(" MF_MAG").setPosition((space * 3), height-50).setSize(len, 20).setFont(createFont("Arial Black", 12)).setColor(MF).setAutoClear(false);
+  cp5.addTextfield("  ANGLE").setPosition((space * 4), height-50).setSize(len, 20).setFont(createFont("Arial Black", 12)).setColor(color(255, 100, 255)).setAutoClear(false);
   
-  cp5.addButton("SUBMIT", 10, (width-len-10), 10, len, 20).setId(1);
+  cp5.addButton("SUBMIT", 10, (space * 5), height-50, (len+10), 20).setFont(createFont("Arial Black", 12)).setColorBackground(color(20, 120, 210)).setId(1);
+  cp5.addButton("CLOSE", 10, (width-len-20), 20, len, 20).setFont(createFont("Arial Black", 12)).setColorBackground(color(255, 0, 0)).setId(2);
   
   cp5.setAutoDraw(false);
   
@@ -57,6 +58,8 @@ void setup() {
 
 void draw() {
   background(0);
+  rotateX(-0.2);
+  rotateY(-0.5);
   
   cam.beginHUD();
   fill(MF);
@@ -88,27 +91,26 @@ void gui() {
 }
 
 void controlEvent(ControlEvent theEvent) {
-  q_temp = float(cp5.get(Textfield.class, "CHARGE").getText());
-  EF_Mag_temp = float(cp5.get(Textfield.class, "EF_MAG").getText());
-  MF_Mag_temp = float(cp5.get(Textfield.class, "MF_MAG").getText());
-  theta = radians(float(cp5.get(Textfield.class, "ANGLE").getText()));
-  
-  if ((!Float.isNaN(q_temp)) && (!Float.isNaN(EF_Mag_temp)) && (!Float.isNaN(MF_Mag_temp)) && (!Float.isNaN(theta))) {
-    if ((q_temp != charge) || (EF_Mag_temp != EF_Mag) || (MF_Mag_temp != MF_Mag) || (theta != angle)){
-      charge = q_temp;
-      EF_Mag = EF_Mag_temp;
-      MF_Mag = MF_Mag_temp;
-      angle = theta;
-      
-      axis.Arrows(MF, EF, "Y", angle);
-      p.reset(charge, EF_Mag, axis.MF_direction(), MF_Mag);
-  
+  if (theEvent.getController().getId() == 1) {
+    q_temp = float(cp5.get(Textfield.class, "CHARGE").getText());
+    EF_Mag_temp = float(cp5.get(Textfield.class, " EF_MAG").getText());
+    MF_Mag_temp = float(cp5.get(Textfield.class, " MF_MAG").getText());
+    theta = radians(float(cp5.get(Textfield.class, "  ANGLE").getText()));
+    
+    if ((!Float.isNaN(q_temp)) && (!Float.isNaN(EF_Mag_temp)) && (!Float.isNaN(MF_Mag_temp)) && (!Float.isNaN(theta))) {
+      if ((q_temp != charge) || (EF_Mag_temp != EF_Mag) || (MF_Mag_temp != MF_Mag) || (theta != angle)){
+        charge = q_temp;
+        EF_Mag = EF_Mag_temp;
+        MF_Mag = MF_Mag_temp;
+        angle = theta;
+        
+        axis.Arrows(MF, EF, "Y", angle);
+        p.reset(charge, EF_Mag, axis.MF_direction(), MF_Mag);
+    
+      }
     }
   }
-}
-
-void keyPressed() {
-  if (key == ESC) {
+  else if (theEvent.getController().getId() == 2) {
     exit();
   }
 }
